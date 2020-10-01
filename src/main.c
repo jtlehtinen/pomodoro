@@ -49,6 +49,9 @@ const char* GetTextByID(TextID id) {
       case TextID_Styles: return "Styles";
       case TextID_About: return "About";
 
+      case TextID_Rounds: return "Rounds";
+      case TextID_ResetTimerConfig: return "Reset Defaults";
+
       case TextID_Pomodoro: return "Pomodoro";
       case TextID_AboutDescription: return "Pomodoro technique simplified";
 
@@ -61,6 +64,14 @@ const char* GetTextByID(TextID id) {
       case TextID_StyleJungle: return "Jungle";
       case TextID_StyleLavanda: return "Lavanda";
       case TextID_StyleTerminal: return "Terminal";
+
+      case TextID_OptionAlwaysOnTop: return "Always On Top";
+      case TextID_OptionAutoStartWorkTimer: return "Auto-start Work Timer";
+      case TextID_OptionAutoStartBreakTimer: return "Auto-start Break Timer";
+      case TextID_OptionTickSounds: return "Tick Sounds";
+      case TextID_OptionDesktopNotifications: return "Desktop Notifications";
+      case TextID_OptionMinimizeToTray: return "Minimize to Tray";
+      case TextID_OptionMinimizeToTrayOnClose: return "Minimize to Tray on Close";
 
       default: return "TODO TEXT";
    }
@@ -80,6 +91,27 @@ const char* GetStyleFile(Style style) {
 
       default: return NULL;
    }
+}
+
+TimerConfig MakeDefaultTimerConfig() {
+   TimerConfig result = {0};
+   result.focus = 25.0f;
+   result.shortBreak = 5.0f;
+   result.longBreak = 15.0f;
+   result.rounds = 4.0f;
+   return result;
+}
+
+Options MakeDefaultOptions() {
+   Options result = {0};
+   result.alwaysOnTop = false;
+   result.autoStartWorkTimer = true;
+   result.autoStartBreakTimer = true;
+   result.tickSounds = true;
+   result.desktopNotifications = true;
+   result.minimizeToTray = false;
+   result.minimizeToTrayOnClose = false;
+   return result;
 }
 
 Timer MakeTimer(TimerType type) {
@@ -173,12 +205,113 @@ View DrawChangeViewButton(View view) {
    return view;
 }
 
-void DrawTimerConfigPage() {
-   // @TODO
+float DrawTimerConfigTimeSlider(const char* label, float* value, float midx, float midy, float minValue, float maxValue, TimerConfigSliderFlag flag) {
+   const float x = midx - midx / 2.0f;
+   float y = midy;
+
+   const float w = midx;
+   const float h = 20.0f;
+
+   GuiSetStyle(LABEL, TEXT_ALIGNMENT, GUI_TEXT_ALIGN_CENTER);
+
+   GuiLabel(MakeRectangle(x, y, w, h), label);
+   y += h;
+
+   const int rounded = RoundToInt(*value);
+   const char* valueLabel = (flag == TimerConfigSliderFlag_Time ? EasyPrint("%d:00", rounded) : EasyPrint("%d", rounded));
+   GuiLabel(MakeRectangle(x, y, w, h), valueLabel);
+   y += h;
+
+   *value = GuiSlider(MakeRectangle(x, y, w, h), NULL, NULL, *value, minValue, maxValue);
+   y += h * 2.0f;
+
+   return y;
 }
 
-void DrawOptionsPage() {
-   // @TODO
+void DrawTimerConfigPage(Fonts* fonts, TimerConfig* config) {
+   TimerConfig oldConfig = *config;
+
+   const int sw = GetScreenWidth();
+   const int sh = GetScreenHeight();
+
+   const float midx = sw / 2.0f;
+   const float midy = sh / 2.0f;
+
+   float x = midx - midx / 2.0f;
+   float y = sh / 24.0f;
+
+   const float w = midx;
+   const float h = 20.0f;
+
+   GuiSetStyle(LABEL, TEXT_ALIGNMENT, GUI_TEXT_ALIGN_CENTER);
+
+   GuiSetFont(fonts->bigFont);
+   GuiLabel(MakeRectangle(x, y, w, h), GetTextByID(TextID_Timer));
+   GuiSetFont(fonts->font);
+
+   y += sh / 16.0f;
+
+   y = DrawTimerConfigTimeSlider(GetTextByID(TextID_Focus), &config->focus, midx, y, 1.0f, 90.0f, TimerConfigSliderFlag_Time);
+   y = DrawTimerConfigTimeSlider(GetTextByID(TextID_ShortBreak), &config->shortBreak, midx, y, 1.0f, 90.0f, TimerConfigSliderFlag_Time);
+   y = DrawTimerConfigTimeSlider(GetTextByID(TextID_LongBreak), &config->longBreak, midx, y, 1.0f, 90.0f, TimerConfigSliderFlag_Time);
+   y = DrawTimerConfigTimeSlider(GetTextByID(TextID_Rounds), &config->rounds, midx, y, 1.0f, 12.0f, TimerConfigSliderFlag_Int);
+
+   y += sh / 24.0f;
+
+   if (GuiLabelButton(MakeRectangle(x, y, w, h), GetTextByID(TextID_ResetTimerConfig))) {
+      *config = MakeDefaultTimerConfig();
+   }
+
+   config->changed = (oldConfig.focus != config->focus ||
+                      oldConfig.shortBreak != config->shortBreak ||
+                      oldConfig.longBreak != config->longBreak ||
+                      oldConfig.rounds != config->rounds);
+}
+
+void DrawOptionsPage(Fonts* fonts, Options* options) {
+   const int sw = GetScreenWidth();
+   const int sh = GetScreenHeight();
+
+   const float midx = sw / 2.0f;
+   const float midy = sh / 2.0f;
+
+   float x = midx - midx / 2.0f;
+   float y = sh / 24.0f;
+
+   float w = midx;
+   const float h = 20.0f;
+
+   GuiSetStyle(LABEL, TEXT_ALIGNMENT, GUI_TEXT_ALIGN_CENTER);
+
+   GuiSetFont(fonts->bigFont);
+   GuiLabel(MakeRectangle(x, y, w, h), GetTextByID(TextID_Options));
+   GuiSetFont(fonts->font);
+   y += sh / 8.0f;
+
+   w = 20.0f;
+   x = midx - midx * 3.0f / 4.0f;
+   float dy = sh / 16.0f;
+
+   options->alwaysOnTop = GuiCheckBox(MakeRectangle(x, y, w, h), GetTextByID(TextID_OptionAlwaysOnTop), options->alwaysOnTop);
+   y += dy;
+
+   options->autoStartWorkTimer = GuiCheckBox(MakeRectangle(x, y, w, h), GetTextByID(TextID_OptionAutoStartWorkTimer), options->autoStartWorkTimer);
+   y += dy;
+
+   options->autoStartBreakTimer = GuiCheckBox(MakeRectangle(x, y, w, h), GetTextByID(TextID_OptionAutoStartBreakTimer), options->autoStartBreakTimer);
+   y += dy;
+
+   options->tickSounds = GuiCheckBox(MakeRectangle(x, y, w, h), GetTextByID(TextID_OptionTickSounds), options->tickSounds);
+   y += dy;
+
+   options->desktopNotifications = GuiCheckBox(MakeRectangle(x, y, w, h), GetTextByID(TextID_OptionDesktopNotifications), options->desktopNotifications);
+   y += dy;
+
+   options->minimizeToTray = GuiCheckBox(MakeRectangle(x, y, w, h), GetTextByID(TextID_OptionMinimizeToTray), options->minimizeToTray);
+   y += dy;
+
+   options->minimizeToTrayOnClose = GuiCheckBox(MakeRectangle(x, y, w, h), GetTextByID(TextID_OptionMinimizeToTrayOnClose), options->minimizeToTrayOnClose);
+   y += dy;
 }
 
 Style DrawStylesPage(Fonts* fonts, Style style) {
@@ -315,6 +448,9 @@ int main() {
    Style currentStyle = Style_Ashes;
    bool styleChanged = false;
 
+   Options options = {0};
+   TimerConfig config = MakeDefaultTimerConfig();
+
    while (!WindowShouldClose()) {
       if (styleChanged) {
          styleChanged = false;
@@ -341,9 +477,9 @@ int main() {
       } else if (currentView == View_Settings) {
 
          if (currentSettingsPage == SettingsPage_TimerConfig) {
-            DrawTimerConfigPage();
+            DrawTimerConfigPage(&fonts, &config);
          } else if (currentSettingsPage == SettingsPage_Options) {
-            DrawOptionsPage();
+            DrawOptionsPage(&fonts, &options);
          } else if (currentSettingsPage == SettingsPage_Styles) {
             Style newStyle = DrawStylesPage(&fonts, currentStyle);
             styleChanged = (currentStyle != newStyle);
