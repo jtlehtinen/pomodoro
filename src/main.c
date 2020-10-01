@@ -48,19 +48,6 @@ const char* GetTextByID(TextID id) {
    }
 }
 
-typedef enum {
-   TimerType_Focus,
-   TimerType_ShortBreak,
-   TimerType_LongBreak,
-} TimerType;
-
-typedef struct {
-   TimerType type;
-   float duration;
-   float consumed;
-   bool paused;
-} Timer;
-
 Timer MakeTimer(TimerType type) {
    const float secondsPerMinute = 60.0f;
 
@@ -77,11 +64,6 @@ void AdvanceTimer(Timer* timer, float seconds) {
       timer->consumed += seconds;
    }
 }
-
-typedef struct {
-   int minutes;
-   int seconds;
-} Duration;
 
 Duration GetDurationToGo(Timer* timer) {
    int left = RoundToInt(timer->duration - timer->consumed);
@@ -143,7 +125,18 @@ void DrawTimerText(Timer* timer, Font* timeFont, Font* timerTypeFont, Color colo
    assert(timerTypeText);
 
    GuiSetFont(*timerTypeFont);
-   GuiDrawText(timerTypeText, MakeRectangle(0, GetScreenHeight() * 0.1f, GetScreenWidth(), GetScreenHeight()), GUI_TEXT_ALIGN_CENTER, color);
+   GuiDrawText(timerTypeText, MakeRectangle(0, GetScreenHeight() / 10, GetScreenWidth(), GetScreenHeight()), GUI_TEXT_ALIGN_CENTER, color);
+}
+
+View DrawChangeViewButton(View view) {
+   GuiSetStyle(LABEL, TEXT_ALIGNMENT, GUI_TEXT_ALIGN_LEFT);
+
+   const guiIconName icon = (view == View_Main ? RICON_GEAR : RICON_ARROW_LEFT);
+   if (GuiLabelButton(MakeRectangle(5, 5, 20, 20), GuiIconText(icon, NULL))) {
+      view = (view == View_Main ? View_Settings : View_Main);
+   }
+
+   return view;
 }
 
 int main() {
@@ -168,6 +161,7 @@ int main() {
    Font extraBigFont = LoadFontEx("../../res/nokiafc22.ttf", 64, 0, 0);
 
    Timer timer = MakeTimer(TimerType_Focus);
+   View currentView = View_Main;
 
    while (!WindowShouldClose()) {
       AdvanceTimer(&timer, GetFrameTime());
@@ -179,6 +173,8 @@ int main() {
       ClearBackground(bgColor);
       DrawTimerRings(&timer);
       DrawTimerText(&timer, &extraBigFont, &bigFont, textColor);
+      currentView = DrawChangeViewButton(currentView);
+
       EndDrawing();
    }
 
