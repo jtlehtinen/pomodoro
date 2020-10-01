@@ -147,5 +147,6 @@
     <ClInclude Include="..\..\ext\raylib\src\external\tinyobj_loader_c.h">
       <Filter>raylib\external</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\src\types.h" />
   </ItemGroup>
 </Project>
