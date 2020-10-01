@@ -11,6 +11,8 @@
 
 #pragma warning(pop)
 
+#include "types.h"
+#include <assert.h>
 #include <crtdbg.h>
 #include <stdio.h>
 
@@ -34,6 +36,16 @@ float Minf(float a, float b) { return a < b ? a : b; }
 
 int RoundToInt(float value) {
    return (int)roundf(value);
+}
+
+const char* GetTextByID(TextID id) {
+   switch (id) {
+      case TextID_Focus: return "Focus";
+      case TextID_LongBreak: return "Long Break";
+      case TextID_ShortBreak: return "Short Break";
+
+      default: return "TODO TEXT";
+   }
 }
 
 typedef enum {
@@ -112,12 +124,26 @@ void DrawTimerRings(Timer* timer) {
    DrawRing(MakeVector2(sw * 0.5f, sh * 0.5f), inner, outer, 180, 180 + angle, angle + 1, RED);
 }
 
-void DrawTimerToGo(Timer* timer, Font* font, Color color) {
+void DrawTimerText(Timer* timer, Font* timeFont, Font* timerTypeFont, Color color) {
    const Duration duration = GetDurationToGo(timer);
 
-   GuiSetFont(*font);
+   GuiSetFont(*timeFont);
    const char* timeText = EasyPrint("%d:%02d", duration.minutes, duration.seconds);
    GuiDrawText(timeText, MakeRectangle(0, 0, GetScreenWidth(), GetScreenHeight()), GUI_TEXT_ALIGN_CENTER, color);
+
+   const char* timerTypeText = NULL;
+
+   if (timer->type == TimerType_Focus) {
+      timerTypeText = GetTextByID(TextID_Focus);
+   } else if (timer->type == TimerType_LongBreak) {
+      timerTypeText = GetTextByID(TextID_LongBreak);
+   } else if (timer->type == TimerType_ShortBreak) {
+      timerTypeText = GetTextByID(TextID_ShortBreak);
+   }
+   assert(timerTypeText);
+
+   GuiSetFont(*timerTypeFont);
+   GuiDrawText(timerTypeText, MakeRectangle(0, GetScreenHeight() * 0.1f, GetScreenWidth(), GetScreenHeight()), GUI_TEXT_ALIGN_CENTER, color);
 }
 
 int main() {
@@ -146,14 +172,13 @@ int main() {
    while (!WindowShouldClose()) {
       AdvanceTimer(&timer, GetFrameTime());
       
-
       const Color textColor = GetColor(GuiGetStyle(DEFAULT, TEXT_COLOR_NORMAL));
       const Color bgColor = GetColor(GuiGetStyle(DEFAULT, BACKGROUND_COLOR));
 
       BeginDrawing();
       ClearBackground(bgColor);
       DrawTimerRings(&timer);
-      DrawTimerToGo(&timer, &extraBigFont, textColor);
+      DrawTimerText(&timer, &extraBigFont, &bigFont, textColor);
       EndDrawing();
    }
 
