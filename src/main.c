@@ -44,6 +44,14 @@ const char* GetTextByID(TextID id) {
       case TextID_LongBreak: return "Long Break";
       case TextID_ShortBreak: return "Short Break";
 
+      case TextID_Timer: return "Timer";
+      case TextID_Options: return "Options";
+      case TextID_Styles: return "Styles";
+      case TextID_About: return "About";
+
+      case TextID_Pomodoro: return "Pomodoro";
+      case TextID_AboutDescription: return "Pomodoro technique simplified";
+
       default: return "TODO TEXT";
    }
 }
@@ -139,6 +147,36 @@ View DrawChangeViewButton(View view) {
    return view;
 }
 
+void DrawTimerConfigPage() {
+   // @TODO
+}
+
+void DrawOptionsPage() {
+   // @TODO
+}
+
+void DrawStylesPage() {
+   // @TODO
+}
+
+void DrawAboutPage(Fonts* fonts, Color color) {
+   const int sw = GetScreenWidth();
+   const int sh = GetScreenHeight();
+   const int ystep = sh / 8;
+   int y = sh / 24;
+
+   GuiSetStyle(LABEL, TEXT_ALIGNMENT, GUI_TEXT_ALIGN_CENTER);
+
+   GuiSetFont(fonts->bigFont);
+   GuiDrawText(GetTextByID(TextID_About), MakeRectangle(0, y, sw, 20.0f), GUI_TEXT_ALIGN_CENTER, color);
+   y += ystep;
+
+   GuiSetFont(fonts->font);
+   GuiDrawText(GetTextByID(TextID_Pomodoro), MakeRectangle(0, y, sw, 20.0f), GUI_TEXT_ALIGN_CENTER, color);
+   y += ystep;
+
+   GuiDrawText(GetTextByID(TextID_AboutDescription), MakeRectangle(0, y, sw, 20.0f), GUI_TEXT_ALIGN_CENTER, color);
+}
 
 SettingsPage DrawSettingsViewPageTabs(SettingsPage currentPage) {
    const int sw = GetScreenWidth();
@@ -192,9 +230,10 @@ int main() {
    SetTargetFPS(30);
    //SetExitKey(/* do I need this?  */);
 
-   Font font = LoadFontEx("../../res/nokiafc22.ttf", 18, 0, 0);
-   Font bigFont = LoadFontEx("../../res/nokiafc22.ttf", 32, 0, 0);
-   Font extraBigFont = LoadFontEx("../../res/nokiafc22.ttf", 64, 0, 0);
+   Fonts fonts;
+   fonts.font = LoadFontEx("../../res/nokiafc22.ttf", 18, 0, 0);
+   fonts.bigFont = LoadFontEx("../../res/nokiafc22.ttf", 32, 0, 0);
+   fonts.extraBigFont = LoadFontEx("../../res/nokiafc22.ttf", 64, 0, 0);
 
    Timer timer = MakeTimer(TimerType_Focus);
    View currentView = View_Main;
@@ -212,9 +251,16 @@ int main() {
       if (currentView == View_Main) {
 
          DrawTimerRings(&timer);
-         DrawTimerText(&timer, &extraBigFont, &bigFont, textColor);
+         DrawTimerText(&timer, &fonts.extraBigFont, &fonts.bigFont, textColor);
 
       } else if (currentView == View_Settings) {
+
+         switch (currentSettingsPage) {
+            case SettingsPage_TimerConfig: DrawTimerConfigPage(); break;
+            case SettingsPage_Options: DrawOptionsPage(); break;
+            case SettingsPage_Styles: DrawStylesPage(); break;
+            case SettingsPage_About: DrawAboutPage(&fonts, textColor); break;
+         }
        
          currentSettingsPage = DrawSettingsViewPageTabs(currentSettingsPage);
 
@@ -225,9 +271,9 @@ int main() {
       EndDrawing();
    }
 
-   UnloadFont(extraBigFont);
-   UnloadFont(bigFont);
-   UnloadFont(font);
+   UnloadFont(fonts.extraBigFont);
+   UnloadFont(fonts.bigFont);
+   UnloadFont(fonts.font);
 
    CloseAudioDevice();
    CloseWindow();
