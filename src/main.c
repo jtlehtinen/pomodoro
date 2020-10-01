@@ -52,7 +52,33 @@ const char* GetTextByID(TextID id) {
       case TextID_Pomodoro: return "Pomodoro";
       case TextID_AboutDescription: return "Pomodoro technique simplified";
 
+      case TextID_StyleAshes: return "Ashes";
+      case TextID_StyleBluish: return "Bluish";
+      case TextID_StyleCandy: return "Candy";
+      case TextID_StyleCherry: return "Cherry";
+      case TextID_StyleCyber: return "Cyber";
+      case TextID_StyleDefault: return "Default";
+      case TextID_StyleJungle: return "Jungle";
+      case TextID_StyleLavanda: return "Lavanda";
+      case TextID_StyleTerminal: return "Terminal";
+
       default: return "TODO TEXT";
+   }
+}
+
+const char* GetStyleFile(Style style) {
+   switch (style) {
+      case Style_Ashes: return "../../res/styles/ashes/ashes.rgs";
+      case Style_Bluish: return "../../res/styles/bluish/bluish.rgs";
+      case Style_Candy: return "../../res/styles/candy/candy.rgs";
+      case Style_Cherry: return "../../res/styles/cherry/cherry.rgs";
+      case Style_Cyber: return "../../res/styles/cyber/cyber.rgs";
+      case Style_Default: return "../../res/styles/default/default.rgs";
+      case Style_Jungle: return "../../res/styles/jungle/jungle.rgs";
+      case Style_Lavanda: return "../../res/styles/lavanda/lavanda.rgs";
+      case Style_Terminal: return "../../res/styles/terminal/terminal.rgs";
+
+      default: return NULL;
    }
 }
 
@@ -155,8 +181,58 @@ void DrawOptionsPage() {
    // @TODO
 }
 
-void DrawStylesPage() {
-   // @TODO
+Style DrawStylesPage(Fonts* fonts, Style style) {
+   const int sw = GetScreenWidth();
+   const int sh = GetScreenHeight();
+
+   const float midx = sw / 2.0f;
+   const float midy = sh / 2.0f;
+
+   float x = midx - midx / 2.0f;
+   float y = sh / 24.0f;
+
+   const float w = midx;
+   const float h = 20.0f;
+
+   GuiSetStyle(LABEL, TEXT_ALIGNMENT, GUI_TEXT_ALIGN_CENTER);
+
+   GuiSetFont(fonts->bigFont);
+   GuiLabel(MakeRectangle(midx - midx / 2.0f, y, midx, 20.0f), GetTextByID(TextID_Styles));
+   GuiSetFont(fonts->font);
+   y += sh / 8.0f;
+
+   float dy = sh / 16.0f;
+
+   Style newStyle = style;
+
+   if (GuiLabelButton(MakeRectangle(x, y, w, h), GetTextByID(TextID_StyleAshes))) newStyle = Style_Ashes;
+   y += dy;
+
+   if (GuiLabelButton(MakeRectangle(x, y, w, h), GetTextByID(TextID_StyleBluish))) newStyle = Style_Bluish;
+   y += dy;
+
+   if (GuiLabelButton(MakeRectangle(x, y, w, h), GetTextByID(TextID_StyleCandy))) newStyle = Style_Candy;
+   y += dy;
+
+   if (GuiLabelButton(MakeRectangle(x, y, w, h), GetTextByID(TextID_StyleCherry))) newStyle = Style_Cherry;
+   y += dy;
+
+   if (GuiLabelButton(MakeRectangle(x, y, w, h), GetTextByID(TextID_StyleCyber))) newStyle = Style_Cyber;
+   y += dy;
+
+   if (GuiLabelButton(MakeRectangle(x, y, w, h), GetTextByID(TextID_StyleDefault))) newStyle = Style_Default;
+   y += dy;
+
+   if (GuiLabelButton(MakeRectangle(x, y, w, h), GetTextByID(TextID_StyleJungle))) newStyle = Style_Jungle;
+   y += dy;
+
+   if (GuiLabelButton(MakeRectangle(x, y, w, h), GetTextByID(TextID_StyleLavanda))) newStyle = Style_Lavanda;
+   y += dy;
+
+   if (GuiLabelButton(MakeRectangle(x, y, w, h), GetTextByID(TextID_StyleTerminal))) newStyle = Style_Terminal;
+   y += dy;
+
+   return newStyle;
 }
 
 void DrawAboutPage(Fonts* fonts, Color color) {
@@ -165,17 +241,15 @@ void DrawAboutPage(Fonts* fonts, Color color) {
    const int ystep = sh / 8;
    int y = sh / 24;
 
-   GuiSetStyle(LABEL, TEXT_ALIGNMENT, GUI_TEXT_ALIGN_CENTER);
-
    GuiSetFont(fonts->bigFont);
-   GuiDrawText(GetTextByID(TextID_About), MakeRectangle(0, y, sw, 20.0f), GUI_TEXT_ALIGN_CENTER, color);
+   GuiDrawText(GetTextByID(TextID_About), MakeRectangle(0, y, sw, 20), GUI_TEXT_ALIGN_CENTER, color);
    y += ystep;
 
    GuiSetFont(fonts->font);
-   GuiDrawText(GetTextByID(TextID_Pomodoro), MakeRectangle(0, y, sw, 20.0f), GUI_TEXT_ALIGN_CENTER, color);
+   GuiDrawText(GetTextByID(TextID_Pomodoro), MakeRectangle(0, y, sw, 20), GUI_TEXT_ALIGN_CENTER, color);
    y += ystep;
 
-   GuiDrawText(GetTextByID(TextID_AboutDescription), MakeRectangle(0, y, sw, 20.0f), GUI_TEXT_ALIGN_CENTER, color);
+   GuiDrawText(GetTextByID(TextID_AboutDescription), MakeRectangle(0, y, sw, 20), GUI_TEXT_ALIGN_CENTER, color);
 }
 
 SettingsPage DrawSettingsViewPageTabs(SettingsPage currentPage) {
@@ -238,8 +312,19 @@ int main() {
    Timer timer = MakeTimer(TimerType_Focus);
    View currentView = View_Main;
    SettingsPage currentSettingsPage = SettingsPage_TimerConfig;
+   Style currentStyle = Style_Ashes;
+   bool styleChanged = false;
 
    while (!WindowShouldClose()) {
+      if (styleChanged) {
+         styleChanged = false;
+         
+         const char* file = GetStyleFile(currentStyle);
+         if (file) {
+            GuiLoadStyle(file);
+         }
+      }
+
       AdvanceTimer(&timer, GetFrameTime());
       
       const Color textColor = GetColor(GuiGetStyle(DEFAULT, TEXT_COLOR_NORMAL));
@@ -255,16 +340,20 @@ int main() {
 
       } else if (currentView == View_Settings) {
 
-         switch (currentSettingsPage) {
-            case SettingsPage_TimerConfig: DrawTimerConfigPage(); break;
-            case SettingsPage_Options: DrawOptionsPage(); break;
-            case SettingsPage_Styles: DrawStylesPage(); break;
-            case SettingsPage_About: DrawAboutPage(&fonts, textColor); break;
+         if (currentSettingsPage == SettingsPage_TimerConfig) {
+            DrawTimerConfigPage();
+         } else if (currentSettingsPage == SettingsPage_Options) {
+            DrawOptionsPage();
+         } else if (currentSettingsPage == SettingsPage_Styles) {
+            Style newStyle = DrawStylesPage(&fonts, currentStyle);
+            styleChanged = (currentStyle != newStyle);
+            currentStyle = newStyle;
+         } else if (currentSettingsPage == SettingsPage_About) {
+            DrawAboutPage(&fonts, textColor);
          }
-       
-         currentSettingsPage = DrawSettingsViewPageTabs(currentSettingsPage);
 
-      }
+         currentSettingsPage = DrawSettingsViewPageTabs(currentSettingsPage);
+       }
       
       currentView = DrawChangeViewButton(currentView);
 
@@ -277,6 +366,8 @@ int main() {
 
    CloseAudioDevice();
    CloseWindow();
+
+   // @TODO: Fix leak in style loading.
 
    return 0;
 }

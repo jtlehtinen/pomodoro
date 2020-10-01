@@ -12,6 +12,16 @@ typedef enum {
 
    TextID_Pomodoro,
    TextID_AboutDescription,
+
+   TextID_StyleAshes,
+   TextID_StyleBluish,
+   TextID_StyleCandy,
+   TextID_StyleCherry,
+   TextID_StyleCyber,
+   TextID_StyleDefault,
+   TextID_StyleJungle,
+   TextID_StyleLavanda,
+   TextID_StyleTerminal,
 } TextID;
 
 typedef enum {
@@ -49,3 +59,15 @@ typedef struct {
    Font bigFont;
    Font extraBigFont;
 } Fonts;
+
+typedef enum {
+   Style_Ashes,
+   Style_Bluish,
+   Style_Candy,
+   Style_Cherry,
+   Style_Cyber,
+   Style_Default,
+   Style_Jungle,
+   Style_Lavanda,
+   Style_Terminal,
+} Style;

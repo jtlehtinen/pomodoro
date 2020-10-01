@@ -97,6 +97,7 @@
     <ClCompile Include="..\..\ext\raylib\src\textures.c" />
     <ClCompile Include="..\..\ext\raylib\src\utils.c" />
     <ClCompile Include="..\..\src\main.c" />
+    <ClCompile Include="..\..\src\pomodoro.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\ext\raygui\src\gui_textbox_extended.h" />
@@ -135,6 +136,7 @@
     <ClInclude Include="..\..\ext\raylib\src\rnet.h" />
     <ClInclude Include="..\..\ext\raylib\src\utils.h" />
     <ClInclude Include="..\..\ext\raylib\src\uwp_events.h" />
+    <ClInclude Include="..\..\src\pomodoro.h" />
     <ClInclude Include="..\..\src\types.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -26,6 +26,7 @@
     <ClCompile Include="..\..\ext\raylib\src\utils.c">
       <Filter>raylib</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\pomodoro.c" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="raygui">
@@ -148,5 +149,6 @@
       <Filter>raylib\external</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\types.h" />
+    <ClInclude Include="..\..\src\pomodoro.h" />
   </ItemGroup>
 </Project>
