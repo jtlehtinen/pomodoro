@@ -38,6 +38,9 @@
     <Filter Include="raylib\external">
       <UniqueIdentifier>{c1e72a61-07bb-4f6e-8f8c-a3dce11d7d92}</UniqueIdentifier>
     </Filter>
+    <Filter Include="stb">
+      <UniqueIdentifier>{22ae13d1-3b22-4e6a-9187-25dc67137884}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\ext\raygui\src\gui_textbox_extended.h">
@@ -150,5 +153,8 @@
     </ClInclude>
     <ClInclude Include="..\..\src\types.h" />
     <ClInclude Include="..\..\src\pomodoro.h" />
+    <ClInclude Include="..\..\ext\stb\stretchy_buffer.h">
+      <Filter>stb</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

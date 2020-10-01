@@ -11,6 +11,7 @@
 
 #pragma warning(pop)
 
+#include "stb/stretchy_buffer.h"
 #include "types.h"
 #include <assert.h>
 #include <crtdbg.h>

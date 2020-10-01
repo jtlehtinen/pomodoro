@@ -4,3 +4,6 @@
 [submodule "ext/raygui"]
 	path = ext/raygui
 	url = https://github.com/raysan5/raygui.git
+[submodule "ext/stb"]
+	path = ext/stb
+	url = https://github.com/nothings/stb.git

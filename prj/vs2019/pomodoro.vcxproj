@@ -136,6 +136,7 @@
     <ClInclude Include="..\..\ext\raylib\src\rnet.h" />
     <ClInclude Include="..\..\ext\raylib\src\utils.h" />
     <ClInclude Include="..\..\ext\raylib\src\uwp_events.h" />
+    <ClInclude Include="..\..\ext\stb\stretchy_buffer.h" />
     <ClInclude Include="..\..\src\pomodoro.h" />
     <ClInclude Include="..\..\src\types.h" />
   </ItemGroup>
