@@ -1,0 +1,151 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="..\..\src\main.c" />
+    <ClCompile Include="..\..\ext\raylib\src\core.c">
+      <Filter>raylib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ext\raylib\src\models.c">
+      <Filter>raylib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ext\raylib\src\raudio.c">
+      <Filter>raylib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ext\raylib\src\rglfw.c">
+      <Filter>raylib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ext\raylib\src\shapes.c">
+      <Filter>raylib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ext\raylib\src\text.c">
+      <Filter>raylib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ext\raylib\src\textures.c">
+      <Filter>raylib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ext\raylib\src\utils.c">
+      <Filter>raylib</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="raygui">
+      <UniqueIdentifier>{686b1f3f-3ddb-4340-b9f3-f749ca06f206}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="raylib">
+      <UniqueIdentifier>{d49cc004-78b6-486f-852f-b5869cb37a17}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="raylib\external">
+      <UniqueIdentifier>{c1e72a61-07bb-4f6e-8f8c-a3dce11d7d92}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\ext\raygui\src\gui_textbox_extended.h">
+      <Filter>raygui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ext\raygui\src\raygui.h">
+      <Filter>raygui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ext\raygui\src\ricons.h">
+      <Filter>raygui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ext\raylib\src\camera.h">
+      <Filter>raylib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ext\raylib\src\config.h">
+      <Filter>raylib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ext\raylib\src\easings.h">
+      <Filter>raylib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ext\raylib\src\gestures.h">
+      <Filter>raylib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ext\raylib\src\physac.h">
+      <Filter>raylib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ext\raylib\src\raudio.h">
+      <Filter>raylib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ext\raylib\src\raylib.h">
+      <Filter>raylib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ext\raylib\src\raymath.h">
+      <Filter>raylib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ext\raylib\src\rlgl.h">
+      <Filter>raylib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ext\raylib\src\rmem.h">
+      <Filter>raylib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ext\raylib\src\rnet.h">
+      <Filter>raylib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ext\raylib\src\utils.h">
+      <Filter>raylib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ext\raylib\src\uwp_events.h">
+      <Filter>raylib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ext\raylib\src\external\cgltf.h">
+      <Filter>raylib\external</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ext\raylib\src\external\dirent.h">
+      <Filter>raylib\external</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ext\raylib\src\external\dr_flac.h">
+      <Filter>raylib\external</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ext\raylib\src\external\dr_mp3.h">
+      <Filter>raylib\external</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ext\raylib\src\external\dr_wav.h">
+      <Filter>raylib\external</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ext\raylib\src\external\glad.h">
+      <Filter>raylib\external</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ext\raylib\src\external\jar_mod.h">
+      <Filter>raylib\external</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ext\raylib\src\external\jar_xm.h">
+      <Filter>raylib\external</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ext\raylib\src\external\miniaudio.h">
+      <Filter>raylib\external</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ext\raylib\src\external\msf_gif.h">
+      <Filter>raylib\external</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ext\raylib\src\external\par_shapes.h">
+      <Filter>raylib\external</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ext\raylib\src\external\rgif.h">
+      <Filter>raylib\external</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ext\raylib\src\external\stb_image.h">
+      <Filter>raylib\external</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ext\raylib\src\external\stb_image_resize.h">
+      <Filter>raylib\external</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ext\raylib\src\external\stb_image_write.h">
+      <Filter>raylib\external</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ext\raylib\src\external\stb_perlin.h">
+      <Filter>raylib\external</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ext\raylib\src\external\stb_rect_pack.h">
+      <Filter>raylib\external</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ext\raylib\src\external\stb_truetype.h">
+      <Filter>raylib\external</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ext\raylib\src\external\stb_vorbis.h">
+      <Filter>raylib\external</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ext\raylib\src\external\tinyobj_loader_c.h">
+      <Filter>raylib\external</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
