@@ -56,16 +56,6 @@ const char* GetTextByID(TextID id) {
       case TextID_Pomodoro: return "Pomodoro";
       case TextID_AboutDescription: return "Pomodoro technique simplified";
 
-      case TextID_StyleAshes: return "Ashes";
-      case TextID_StyleBluish: return "Bluish";
-      case TextID_StyleCandy: return "Candy";
-      case TextID_StyleCherry: return "Cherry";
-      case TextID_StyleCyber: return "Cyber";
-      case TextID_StyleDefault: return "Default";
-      case TextID_StyleJungle: return "Jungle";
-      case TextID_StyleLavanda: return "Lavanda";
-      case TextID_StyleTerminal: return "Terminal";
-
       case TextID_OptionAlwaysOnTop: return "Always On Top";
       case TextID_OptionAutoStartWorkTimer: return "Auto-start Work Timer";
       case TextID_OptionAutoStartBreakTimer: return "Auto-start Break Timer";
@@ -75,22 +65,6 @@ const char* GetTextByID(TextID id) {
       case TextID_OptionMinimizeToTrayOnClose: return "Minimize to Tray on Close";
 
       default: return "TODO TEXT";
-   }
-}
-
-const char* GetStyleFile(Style style) {
-   switch (style) {
-      case Style_Ashes: return "../../res/styles/ashes/ashes.rgs";
-      case Style_Bluish: return "../../res/styles/bluish/bluish.rgs";
-      case Style_Candy: return "../../res/styles/candy/candy.rgs";
-      case Style_Cherry: return "../../res/styles/cherry/cherry.rgs";
-      case Style_Cyber: return "../../res/styles/cyber/cyber.rgs";
-      case Style_Default: return "../../res/styles/default/default.rgs";
-      case Style_Jungle: return "../../res/styles/jungle/jungle.rgs";
-      case Style_Lavanda: return "../../res/styles/lavanda/lavanda.rgs";
-      case Style_Terminal: return "../../res/styles/terminal/terminal.rgs";
-
-      default: return NULL;
    }
 }
 
@@ -153,8 +127,8 @@ Vector2 MakeVector2(float x, float y) {
    return result;
 }
 
-Rectangle MakeRectangle(int x, int y, int width, int height) {
-   Rectangle result = {(float)x, (float)y, (float)width, (float)height};
+Rectangle MakeRectangle(float x, float y, float width, float height) {
+   Rectangle result = {x, y, width, height};
    return result;
 }
 
@@ -178,7 +152,7 @@ void DrawTimerText(Timer* timer, Font* timeFont, Font* timerTypeFont, Color colo
 
    GuiSetFont(*timeFont);
    const char* timeText = EasyPrint("%d:%02d", duration.minutes, duration.seconds);
-   GuiDrawText(timeText, MakeRectangle(0, 0, GetScreenWidth(), GetScreenHeight()), GUI_TEXT_ALIGN_CENTER, color);
+   GuiDrawText(timeText, MakeRectangle(0.0f, 0.0f, (float)GetScreenWidth(), (float)GetScreenHeight()), GUI_TEXT_ALIGN_CENTER, color);
 
    const char* timerTypeText = NULL;
 
@@ -192,7 +166,7 @@ void DrawTimerText(Timer* timer, Font* timeFont, Font* timerTypeFont, Color colo
    assert(timerTypeText);
 
    GuiSetFont(*timerTypeFont);
-   GuiDrawText(timerTypeText, MakeRectangle(0, GetScreenHeight() / 10, GetScreenWidth(), GetScreenHeight()), GUI_TEXT_ALIGN_CENTER, color);
+   GuiDrawText(timerTypeText, MakeRectangle(0, (float)GetScreenHeight() / 10.0f, (float)GetScreenWidth(), (float)GetScreenHeight()), GUI_TEXT_ALIGN_CENTER, color);
 }
 
 View DrawChangeViewButton(View view) {
@@ -315,65 +289,37 @@ void DrawOptionsPage(Fonts* fonts, Options* options) {
    y += dy;
 }
 
-Style DrawStylesPage(Fonts* fonts, Style style) {
-   const int sw = GetScreenWidth();
-   const int sh = GetScreenHeight();
+int DrawStylesPage(Fonts* fonts, Style* styles, int currentStyleIndex, Color color) {
+   const float sw = (float)GetScreenWidth();
+   const float sh = (float)GetScreenHeight();
 
-   const float midx = sw / 2.0f;
-   const float midy = sh / 2.0f;
-
-   float x = midx - midx / 2.0f;
+   float ystep = sh / 8.0f;
    float y = sh / 24.0f;
 
-   const float w = midx;
-   const float h = 20.0f;
-
-   GuiSetStyle(LABEL, TEXT_ALIGNMENT, GUI_TEXT_ALIGN_CENTER);
-
    GuiSetFont(fonts->bigFont);
-   GuiLabel(MakeRectangle(midx - midx / 2.0f, y, midx, 20.0f), GetTextByID(TextID_Styles));
+   GuiDrawText(GetTextByID(TextID_Styles), MakeRectangle(0, y, sw, 20), GUI_TEXT_ALIGN_CENTER, color);
+   y += ystep;
+
    GuiSetFont(fonts->font);
-   y += sh / 8.0f;
+   GuiSetStyle(LABEL, TEXT_ALIGNMENT, GUI_TEXT_ALIGN_CENTER);
+   ystep = sh / 16.0f;
 
-   float dy = sh / 16.0f;
+   const int styleCount = sb_count(styles);
+   for (int styleIndex = 0; styleIndex < styleCount; ++styleIndex) {
+      if (GuiLabelButton(MakeRectangle(0, y, sw, 20), styles[styleIndex].name)) { 
+         currentStyleIndex = styleIndex;
+      }
+      y += ystep;
+   }
 
-   Style newStyle = style;
-
-   if (GuiLabelButton(MakeRectangle(x, y, w, h), GetTextByID(TextID_StyleAshes))) newStyle = Style_Ashes;
-   y += dy;
-
-   if (GuiLabelButton(MakeRectangle(x, y, w, h), GetTextByID(TextID_StyleBluish))) newStyle = Style_Bluish;
-   y += dy;
-
-   if (GuiLabelButton(MakeRectangle(x, y, w, h), GetTextByID(TextID_StyleCandy))) newStyle = Style_Candy;
-   y += dy;
-
-   if (GuiLabelButton(MakeRectangle(x, y, w, h), GetTextByID(TextID_StyleCherry))) newStyle = Style_Cherry;
-   y += dy;
-
-   if (GuiLabelButton(MakeRectangle(x, y, w, h), GetTextByID(TextID_StyleCyber))) newStyle = Style_Cyber;
-   y += dy;
-
-   if (GuiLabelButton(MakeRectangle(x, y, w, h), GetTextByID(TextID_StyleDefault))) newStyle = Style_Default;
-   y += dy;
-
-   if (GuiLabelButton(MakeRectangle(x, y, w, h), GetTextByID(TextID_StyleJungle))) newStyle = Style_Jungle;
-   y += dy;
-
-   if (GuiLabelButton(MakeRectangle(x, y, w, h), GetTextByID(TextID_StyleLavanda))) newStyle = Style_Lavanda;
-   y += dy;
-
-   if (GuiLabelButton(MakeRectangle(x, y, w, h), GetTextByID(TextID_StyleTerminal))) newStyle = Style_Terminal;
-   y += dy;
-
-   return newStyle;
+   return currentStyleIndex;
 }
 
 void DrawAboutPage(Fonts* fonts, Color color) {
-   const int sw = GetScreenWidth();
-   const int sh = GetScreenHeight();
-   const int ystep = sh / 8;
-   int y = sh / 24;
+   const float sw = (float)GetScreenWidth();
+   const float sh = (float)GetScreenHeight();
+   const float ystep = sh / 8.0f;
+   float y = sh / 24.0f;
 
    GuiSetFont(fonts->bigFont);
    GuiDrawText(GetTextByID(TextID_About), MakeRectangle(0, y, sw, 20), GUI_TEXT_ALIGN_CENTER, color);
@@ -387,14 +333,14 @@ void DrawAboutPage(Fonts* fonts, Color color) {
 }
 
 SettingsPage DrawSettingsViewPageTabs(SettingsPage currentPage) {
-   const int sw = GetScreenWidth();
-   const int sh = GetScreenHeight();
+   const float sw = (float)GetScreenWidth();
+   const float sh = (float)GetScreenHeight();
 
-   const int iconWidth = sw / 4;
-   const int iconHeight = 30;
+   const float iconWidth = sw / 4.0f;
+   const float iconHeight = 30.0f;
 
-   int x = 0;
-   const int y = sh - iconHeight;
+   float x = 0.0f;
+   const float y = sh - iconHeight;
 
    if (GuiButton(MakeRectangle(x, y, iconWidth, iconHeight), GuiIconText(RICON_CLOCK, NULL))) {
       currentPage = SettingsPage_TimerConfig;
@@ -419,6 +365,13 @@ SettingsPage DrawSettingsViewPageTabs(SettingsPage currentPage) {
    }
 
    return currentPage;
+}
+
+Style MakeStyle(const char* name, const char* fileName) {
+   Style result = {0};
+   result.name = name;
+   result.fileName = fileName;
+   return result;
 }
 
 int main() {
@@ -446,20 +399,29 @@ int main() {
    Timer timer = MakeTimer(TimerType_Focus);
    View currentView = View_Main;
    SettingsPage currentSettingsPage = SettingsPage_TimerConfig;
-   Style currentStyle = Style_Ashes;
-   bool styleChanged = false;
+
+   Style* styles = NULL;
+   sb_push(styles, MakeStyle("Ashes", "../../res/styles/ashes/ashes.rgs"));
+   sb_push(styles, MakeStyle("Bluish", "../../res/styles/bluish/bluish.rgs"));
+   sb_push(styles, MakeStyle("Candy", "../../res/styles/candy/candy.rgs"));
+   sb_push(styles, MakeStyle("Cherry", "../../res/styles/cherry/cherry.rgs"));
+   sb_push(styles, MakeStyle("Cyber", "../../res/styles/cyber/cyber.rgs"));
+   sb_push(styles, MakeStyle("Default", "../../res/styles/default/default.rgs"));
+   sb_push(styles, MakeStyle("Jungle", "../../res/styles/jungle/jungle.rgs"));
+   sb_push(styles, MakeStyle("Lavanda", "../../res/styles/lavanda/lavanda.rgs"));
+   sb_push(styles, MakeStyle("Terminal", "../../res/styles/terminal/terminal.rgs"));
+
+   int currentStyleIndex = 0;
+   int newStyleIndex = currentStyleIndex;
+   GuiLoadStyle(styles[currentStyleIndex].fileName);
 
    Options options = {0};
    TimerConfig config = MakeDefaultTimerConfig();
 
    while (!WindowShouldClose()) {
-      if (styleChanged) {
-         styleChanged = false;
-         
-         const char* file = GetStyleFile(currentStyle);
-         if (file) {
-            GuiLoadStyle(file);
-         }
+      if (currentStyleIndex != newStyleIndex) {
+         currentStyleIndex = newStyleIndex;
+         GuiLoadStyle(styles[currentStyleIndex].fileName);
       }
 
       AdvanceTimer(&timer, GetFrameTime());
@@ -482,9 +444,7 @@ int main() {
          } else if (currentSettingsPage == SettingsPage_Options) {
             DrawOptionsPage(&fonts, &options);
          } else if (currentSettingsPage == SettingsPage_Styles) {
-            Style newStyle = DrawStylesPage(&fonts, currentStyle);
-            styleChanged = (currentStyle != newStyle);
-            currentStyle = newStyle;
+            newStyleIndex = DrawStylesPage(&fonts, styles, currentStyleIndex, textColor);
          } else if (currentSettingsPage == SettingsPage_About) {
             DrawAboutPage(&fonts, textColor);
          }
@@ -496,6 +456,8 @@ int main() {
 
       EndDrawing();
    }
+
+   sb_free(styles);
 
    UnloadFont(fonts.extraBigFont);
    UnloadFont(fonts.bigFont);
