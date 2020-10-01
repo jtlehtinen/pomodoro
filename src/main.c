@@ -26,6 +26,16 @@ const char* EasyPrint(const char* format, ...) {
    return buf;
 }
 
+int Max(int a, int b) { return b < a ? a : b; }
+float Maxf(float a, float b) { return b < a ? a : b; }
+
+int Min(int a, int b) { return a < b ? a : b; }
+float Minf(float a, float b) { return a < b ? a : b; }
+
+int RoundToInt(float value) {
+   return (int)roundf(value);
+}
+
 typedef enum {
    TimerType_Focus,
    TimerType_ShortBreak,
@@ -56,6 +66,59 @@ void AdvanceTimer(Timer* timer, float seconds) {
    }
 }
 
+typedef struct {
+   int minutes;
+   int seconds;
+} Duration;
+
+Duration GetDurationToGo(Timer* timer) {
+   int left = RoundToInt(timer->duration - timer->consumed);
+   if (left < 0) {
+      left = 0;
+   }
+
+   const int seconds = left % 60;
+   const int minutes = left / 60;
+
+   Duration result;
+   result.minutes = minutes;
+   result.seconds = seconds;
+
+   return result;
+}
+
+Vector2 MakeVector2(float x, float y) {
+   Vector2 result = {x, y};
+   return result;
+}
+
+Rectangle MakeRectangle(int x, int y, int width, int height) {
+   Rectangle result = {(float)x, (float)y, (float)width, (float)height};
+   return result;
+}
+
+void DrawTimerRings(Timer* timer) {
+   const float sw = (float)GetScreenWidth();
+   const float sh = (float)GetScreenHeight();
+
+   const float minDimension = Minf(sw, sh);
+   const float inner = minDimension * 0.8f * 0.5f;
+   const float outer = minDimension * 0.9f * 0.5f;
+
+   const int angle = RoundToInt((timer->duration - timer->consumed) / timer->duration * 360.0f);
+
+   const float diff = outer - inner;
+   DrawRing(MakeVector2(sw * 0.5f, sh * 0.5f), inner + diff / 3.0f, outer - diff / 3.0f, 0, 360, 360, GetColor(GuiGetStyle(DEFAULT, LINE_COLOR)));
+   DrawRing(MakeVector2(sw * 0.5f, sh * 0.5f), inner, outer, 180, 180 + angle, angle + 1, RED);
+}
+
+void DrawTimerToGo(Timer* timer, Font* font, Color color) {
+   const Duration duration = GetDurationToGo(timer);
+
+   GuiSetFont(*font);
+   const char* timeText = EasyPrint("%d:%02d", duration.minutes, duration.seconds);
+   GuiDrawText(timeText, MakeRectangle(0, 0, GetScreenWidth(), GetScreenHeight()), GUI_TEXT_ALIGN_CENTER, color);
+}
 
 int main() {
    #if defined(DEBUG) || defined(_DEBUG)
@@ -67,26 +130,36 @@ int main() {
    const int height = 450;
    const char* title = "Pomodoro";
 
-   SetConfigFlags(FLAG_VSYNC_HINT | FLAG_MSAA_4X_HINT);
+   SetConfigFlags(FLAG_VSYNC_HINT | FLAG_MSAA_4X_HINT | FLAG_WINDOW_RESIZABLE);
    InitWindow(width, height, title);
    InitAudioDevice();
    //SetWindowIcon(LoadImage(/* something crap here */));
    SetTargetFPS(30);
    //SetExitKey(/* do I need this?  */);
 
+   Font font = LoadFontEx("../../res/nokiafc22.ttf", 18, 0, 0);
+   Font bigFont = LoadFontEx("../../res/nokiafc22.ttf", 32, 0, 0);
+   Font extraBigFont = LoadFontEx("../../res/nokiafc22.ttf", 64, 0, 0);
+
    Timer timer = MakeTimer(TimerType_Focus);
 
    while (!WindowShouldClose()) {
       AdvanceTimer(&timer, GetFrameTime());
+      
 
       const Color textColor = GetColor(GuiGetStyle(DEFAULT, TEXT_COLOR_NORMAL));
       const Color bgColor = GetColor(GuiGetStyle(DEFAULT, BACKGROUND_COLOR));
 
       BeginDrawing();
       ClearBackground(bgColor);
-      DrawText(EasyPrint("Consumed: %.1f s", timer.consumed), 20, 20, 16, textColor);
+      DrawTimerRings(&timer);
+      DrawTimerToGo(&timer, &extraBigFont, textColor);
       EndDrawing();
    }
+
+   UnloadFont(extraBigFont);
+   UnloadFont(bigFont);
+   UnloadFont(font);
 
    CloseAudioDevice();
    CloseWindow();
