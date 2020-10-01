@@ -139,6 +139,42 @@ View DrawChangeViewButton(View view) {
    return view;
 }
 
+
+SettingsPage DrawSettingsViewPageTabs(SettingsPage currentPage) {
+   const int sw = GetScreenWidth();
+   const int sh = GetScreenHeight();
+
+   const int iconWidth = sw / 4;
+   const int iconHeight = 30;
+
+   int x = 0;
+   const int y = sh - iconHeight;
+
+   if (GuiButton(MakeRectangle(x, y, iconWidth, iconHeight), GuiIconText(RICON_CLOCK, NULL))) {
+      currentPage = SettingsPage_TimerConfig;
+   }
+
+   x += iconWidth;
+
+   if (GuiButton(MakeRectangle(x, y, iconWidth, iconHeight), GuiIconText(RICON_TOOLS, NULL))) {
+      currentPage = SettingsPage_Options;
+   }
+
+   x += iconWidth;
+
+   if (GuiButton(MakeRectangle(x, y, iconWidth, iconHeight), GuiIconText(RICON_COLOR_BUCKET, NULL))) {
+      currentPage = SettingsPage_Styles;
+   }
+
+   x += iconWidth;
+
+   if (GuiButton(MakeRectangle(x, y, iconWidth, iconHeight), GuiIconText(RICON_INFO, NULL))) {
+      currentPage = SettingsPage_About;
+   }
+
+   return currentPage;
+}
+
 int main() {
    #if defined(DEBUG) || defined(_DEBUG)
       const int currentFlags = _CrtSetDbgFlag(_CRTDBG_REPORT_FLAG);
@@ -162,6 +198,7 @@ int main() {
 
    Timer timer = MakeTimer(TimerType_Focus);
    View currentView = View_Main;
+   SettingsPage currentSettingsPage = SettingsPage_TimerConfig;
 
    while (!WindowShouldClose()) {
       AdvanceTimer(&timer, GetFrameTime());
@@ -171,8 +208,18 @@ int main() {
 
       BeginDrawing();
       ClearBackground(bgColor);
-      DrawTimerRings(&timer);
-      DrawTimerText(&timer, &extraBigFont, &bigFont, textColor);
+
+      if (currentView == View_Main) {
+
+         DrawTimerRings(&timer);
+         DrawTimerText(&timer, &extraBigFont, &bigFont, textColor);
+
+      } else if (currentView == View_Settings) {
+       
+         currentSettingsPage = DrawSettingsViewPageTabs(currentSettingsPage);
+
+      }
+      
       currentView = DrawChangeViewButton(currentView);
 
       EndDrawing();

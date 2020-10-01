@@ -28,3 +28,11 @@ typedef enum {
    View_Main,
    View_Settings,
 } View;
+
+
+typedef enum {
+   SettingsPage_TimerConfig,
+   SettingsPage_Options,
+   SettingsPage_Styles,
+   SettingsPage_About,
+} SettingsPage;
