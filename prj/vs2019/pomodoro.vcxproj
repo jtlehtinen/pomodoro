@@ -60,7 +60,7 @@
       <PreprocessorDefinitions>_CRT_NONSTDC_NO_DEPRECATE;PLATFORM_DESKTOP;_CRT_SECURE_NO_WARNINGS;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\..\ext\;$(SolutionDir)..\..\ext\raylib\src\external\glfw\include\;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\..\ext\;$(SolutionDir)..\..\ext\raylib\src\;$(SolutionDir)..\..\ext\raygui\src\;$(SolutionDir)..\..\ext\raylib\src\external\glfw\include\;</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
