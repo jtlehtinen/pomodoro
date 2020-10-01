@@ -14,6 +14,49 @@
 #include <crtdbg.h>
 #include <stdio.h>
 
+const char* EasyPrint(const char* format, ...) {
+   // @TODO: This is temporary.
+   static char buf[1024] = {0};
+
+   va_list args;
+   va_start(args, format);
+   vsprintf_s(buf, sizeof(buf), format, args);
+   va_end(args);
+
+   return buf;
+}
+
+typedef enum {
+   TimerType_Focus,
+   TimerType_ShortBreak,
+   TimerType_LongBreak,
+} TimerType;
+
+typedef struct {
+   TimerType type;
+   float duration;
+   float consumed;
+   bool paused;
+} Timer;
+
+Timer MakeTimer(TimerType type) {
+   const float secondsPerMinute = 60.0f;
+
+   Timer result = {0};
+   result.type = type;
+   result.duration = 25.0f * secondsPerMinute;
+   result.paused = false;
+
+   return result;
+}
+
+void AdvanceTimer(Timer* timer, float seconds) {
+   if (!timer->paused) {
+      timer->consumed += seconds;
+   }
+}
+
+
 int main() {
    #if defined(DEBUG) || defined(_DEBUG)
       const int currentFlags = _CrtSetDbgFlag(_CRTDBG_REPORT_FLAG);
@@ -31,11 +74,17 @@ int main() {
    SetTargetFPS(30);
    //SetExitKey(/* do I need this?  */);
 
+   Timer timer = MakeTimer(TimerType_Focus);
+
    while (!WindowShouldClose()) {
+      AdvanceTimer(&timer, GetFrameTime());
+
+      const Color textColor = GetColor(GuiGetStyle(DEFAULT, TEXT_COLOR_NORMAL));
       const Color bgColor = GetColor(GuiGetStyle(DEFAULT, BACKGROUND_COLOR));
 
       BeginDrawing();
       ClearBackground(bgColor);
+      DrawText(EasyPrint("Consumed: %.1f s", timer.consumed), 20, 20, 16, textColor);
       EndDrawing();
    }
 
