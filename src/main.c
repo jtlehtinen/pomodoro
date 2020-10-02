@@ -42,15 +42,15 @@ int main() {
    Pomodoro pomodoro;
    PomodoroInit(&pomodoro);
 
-   PomodoroAddStyle(&pomodoro, "Ashes", "../../res/styles/ashes/ashes.rgs");
-   PomodoroAddStyle(&pomodoro, "Bluish", "../../res/styles/bluish/bluish.rgs");
-   PomodoroAddStyle(&pomodoro, "Candy", "../../res/styles/candy/candy.rgs");
-   PomodoroAddStyle(&pomodoro, "Cherry", "../../res/styles/cherry/cherry.rgs");
-   PomodoroAddStyle(&pomodoro, "Cyber", "../../res/styles/cyber/cyber.rgs");
-   PomodoroAddStyle(&pomodoro, "Default", "../../res/styles/default/default.rgs");
-   PomodoroAddStyle(&pomodoro, "Jungle", "../../res/styles/jungle/jungle.rgs");
-   PomodoroAddStyle(&pomodoro, "Lavanda", "../../res/styles/lavanda/lavanda.rgs");
-   PomodoroAddStyle(&pomodoro, "Terminal", "../../res/styles/terminal/terminal.rgs");
+   PomodoroAddStyle(&pomodoro, "Ashes", "res/styles/ashes/ashes.rgs");
+   PomodoroAddStyle(&pomodoro, "Bluish", "res/styles/bluish/bluish.rgs");
+   PomodoroAddStyle(&pomodoro, "Candy", "res/styles/candy/candy.rgs");
+   PomodoroAddStyle(&pomodoro, "Cherry", "res/styles/cherry/cherry.rgs");
+   PomodoroAddStyle(&pomodoro, "Cyber", "res/styles/cyber/cyber.rgs");
+   PomodoroAddStyle(&pomodoro, "Default", "res/styles/default/default.rgs");
+   PomodoroAddStyle(&pomodoro, "Jungle", "res/styles/jungle/jungle.rgs");
+   PomodoroAddStyle(&pomodoro, "Lavanda", "res/styles/lavanda/lavanda.rgs");
+   PomodoroAddStyle(&pomodoro, "Terminal", "res/styles/terminal/terminal.rgs");
 
    int fps = IsWindowFocused() ? 30 : 3;
 

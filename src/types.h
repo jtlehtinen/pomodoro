@@ -91,6 +91,8 @@ enum {
    PomodoroFlag_ConfigChanged = (1 << 1),
 };
 
+#define POMODORO_MAX_PATH  256
+
 typedef struct {
    TimerConfig config;
    Timer timer;
@@ -106,6 +108,8 @@ typedef struct {
 
    Fonts fonts;
    Sounds sounds;
+
+   char resFilePrefix[POMODORO_MAX_PATH];
 
    bool muted;
 

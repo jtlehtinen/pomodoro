@@ -157,21 +157,29 @@ bool PomodoroIsFlagSet(Pomodoro* pomodoro, int flag) {
 }
 
 void PomodoroInit(Pomodoro* pomodoro) {
-   Image icon = LoadImage("../../res/tomato.png");
-   SetWindowIcon(icon);
-   UnloadImage(icon);
-
    Pomodoro zero = {0};
    *pomodoro = zero;
 
-   pomodoro->fonts.font = LoadFontEx("../../res/nokiafc22.ttf", 18, 0, 0);
-   pomodoro->fonts.bigFont = LoadFontEx("../../res/nokiafc22.ttf", 32, 0, 0);
-   pomodoro->fonts.extraBigFont = LoadFontEx("../../res/nokiafc22.ttf", 64, 0, 0);
+   FILE* f = fopen("res/tomato.png", "rb");
+   if (f) {
+      fclose(f);
+      sprintf_s(pomodoro->resFilePrefix, POMODORO_MAX_PATH, "%s", "./");
+   } else {
+      sprintf_s(pomodoro->resFilePrefix, POMODORO_MAX_PATH, "%s", "./../../");
+   }
 
-   pomodoro->sounds.tick = LoadSound("../../res/sounds/tick.mp3");
-   pomodoro->sounds.longBreak = LoadSound("../../res/sounds/alert-long-break.mp3");
-   pomodoro->sounds.shortBreak = LoadSound("../../res/sounds/alert-short-break.mp3");
-   pomodoro->sounds.work = LoadSound("../../res/sounds/alert-work.mp3");
+   Image icon = LoadImage(EasyPrint("%s%s", pomodoro->resFilePrefix, "res/tomato.png"));
+   SetWindowIcon(icon);
+   UnloadImage(icon);
+
+   pomodoro->fonts.font = LoadFontEx(EasyPrint("%s%s", pomodoro->resFilePrefix, "res/nokiafc22.ttf"), 18, 0, 0);
+   pomodoro->fonts.bigFont = LoadFontEx(EasyPrint("%s%s", pomodoro->resFilePrefix, "res/nokiafc22.ttf"), 32, 0, 0);
+   pomodoro->fonts.extraBigFont = LoadFontEx(EasyPrint("%s%s", pomodoro->resFilePrefix, "res/nokiafc22.ttf"), 64, 0, 0);
+
+   pomodoro->sounds.tick = LoadSound(EasyPrint("%s%s", pomodoro->resFilePrefix, "res/sounds/tick.mp3"));
+   pomodoro->sounds.longBreak = LoadSound(EasyPrint("%s%s", pomodoro->resFilePrefix, "res/sounds/alert-long-break.mp3"));
+   pomodoro->sounds.shortBreak = LoadSound(EasyPrint("%s%s", pomodoro->resFilePrefix, "res/sounds/alert-short-break.mp3"));
+   pomodoro->sounds.work = LoadSound(EasyPrint("%s%s", pomodoro->resFilePrefix, "res/sounds/alert-work.mp3"));
 
    pomodoro->options = PomodoroMakeDefaultOptions();
    pomodoro->config = PomodoroMakeDefaultTimerConfig();
@@ -204,7 +212,7 @@ void PomodoroAddStyle(Pomodoro* pomodoro, const char* name, const char* fileName
 
    if (sb_count(pomodoro->styles) == 1) {
       pomodoro->currentStyleIndex = 0;
-      GuiLoadStyle(pomodoro->styles[pomodoro->currentStyleIndex].fileName);
+      GuiLoadStyle(EasyPrint("%s%s", pomodoro->resFilePrefix, pomodoro->styles[pomodoro->currentStyleIndex].fileName));
    }
 }
 
