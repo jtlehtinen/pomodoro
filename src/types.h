@@ -20,9 +20,8 @@ typedef enum {
    TextID_OptionAutoStartWorkTimer,
    TextID_OptionAutoStartBreakTimer,
    TextID_OptionTickSounds,
-   TextID_OptionDesktopNotifications,
-   TextID_OptionMinimizeToTray,
-   TextID_OptionMinimizeToTrayOnClose,
+
+   TextID_Reset,
 } TextID;
 
 typedef enum {
@@ -37,11 +36,6 @@ typedef struct {
    float consumed;
    bool paused;
 } Timer;
-
-typedef struct {
-   int minutes;
-   int seconds;
-} Duration;
 
 typedef enum {
    View_Main,
@@ -62,13 +56,17 @@ typedef struct {
 } Fonts;
 
 typedef struct {
+   Sound tick;
+   Sound longBreak;
+   Sound shortBreak;
+   Sound work;
+} Sounds;
+
+typedef struct {
    bool alwaysOnTop;
    bool autoStartWorkTimer;
    bool autoStartBreakTimer;
    bool tickSounds;
-   bool desktopNotifications;
-   bool minimizeToTray;
-   bool minimizeToTrayOnClose;
 } Options;
 
 typedef struct {
@@ -76,7 +74,6 @@ typedef struct {
    float shortBreak;
    float longBreak;
    float rounds;
-   bool changed;
 } TimerConfig;
 
 typedef enum {
@@ -88,3 +85,29 @@ typedef struct {
    const char* name;
    const char* fileName;
 } Style;
+
+enum {
+   PomodoroFlag_UpdateStyle = (1 << 0),
+   PomodoroFlag_ConfigChanged = (1 << 1),
+};
+
+typedef struct {
+   TimerConfig config;
+   Timer timer;
+   int round;
+
+   View currentView;
+   SettingsPage currentSettingsPage;
+
+   Options options;
+
+   Style* styles;
+   int currentStyleIndex;
+
+   Fonts fonts;
+   Sounds sounds;
+
+   bool muted;
+
+   int flags;
+} Pomodoro;

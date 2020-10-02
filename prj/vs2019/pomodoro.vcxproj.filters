@@ -156,5 +156,6 @@
     <ClInclude Include="..\..\ext\stb\stretchy_buffer.h">
       <Filter>stb</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\src\main.h" />
   </ItemGroup>
 </Project>
